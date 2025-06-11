@@ -1,0 +1,10 @@
+{
+  "name": "flights-dashboard-app-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"npm --prefix client run dev\" \"npm --prefix server run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
