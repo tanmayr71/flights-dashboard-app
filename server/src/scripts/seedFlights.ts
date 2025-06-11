@@ -7,11 +7,16 @@ import "dotenv/config";                             // loads MONGO_URI
 import mongoose from "mongoose";
 import { faker } from "@faker-js/faker";            
 import { addDays, set } from 'date-fns';
-import Flight, {
+
+// Import from our centralized constants
+import {
   AIRPORTS,
   DAYS_OF_WEEK,
-  TimeOfDay
-} from "../models/Flight";
+  type TimeOfDay
+} from "../constants/app-constants";
+
+// Import the Flight model
+import Flight from "../models/Flight";
 
 (async function seed() {
   await mongoose.connect(process.env.MONGO_URI!);
@@ -47,9 +52,9 @@ import Flight, {
             milliseconds: 0
           });
 
-          // simple 3-hour “flight”; tweak if you like
-          const arrivalTime   = addDays(departureTime, 0);
-          arrivalTime.setHours(departureTime.getHours() + 3);
+          // Random flight duration between 1-8 hours (more realistic range)
+          const durationHours = faker.number.float({ min: 1, max: 8, multipleOf: 0.25 }); // 15-minute increments
+          const arrivalTime = new Date(departureTime.getTime() + (durationHours * 60 * 60 * 1000));
 
           const flightId = `${faker.airline.airline().iataCode}${faker.airline.flightNumber()}`;
 

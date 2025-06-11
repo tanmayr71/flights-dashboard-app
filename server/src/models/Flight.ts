@@ -5,22 +5,17 @@
 
 import mongoose, { Schema, Document } from 'mongoose';
 
-//  CONSTANTS
-export const AIRPORTS        = ['JFK', 'LAX'] as const;                 // expand once backend is multi-hub
-export const DAYS_OF_WEEK    = ['Monday', 'Tuesday', 'Wednesday',
-                                'Thursday', 'Friday', 'Saturday',
-                                'Sunday'] as const;
-export const TIMES_OF_DAY    = ['morning', 'afternoon', 'evening'] as const;
-export const FLIGHT_STATUSES = [
-  'On Time', 'Boarding', 'Boarded', 'Departed',
-  'Delayed', 'Late Departure', 'Cancelled',
-] as const;
-
-// TypeScript types for enums
-export type AirportCode  = typeof AIRPORTS[number];
-export type DayOfWeek    = typeof DAYS_OF_WEEK[number];
-export type TimeOfDay    = typeof TIMES_OF_DAY[number];
-export type FlightStatus = typeof FLIGHT_STATUSES[number];
+// Import constants from our single source of truth
+import {
+  AIRPORTS,
+  DAYS_OF_WEEK,
+  TIMES_OF_DAY,
+  FLIGHT_STATUSES,
+  type AirportCode,
+  type DayOfWeek,
+  type TimeOfDay,
+  type FlightStatus
+} from '../constants/app-constants';
 
 //  Flight interface  
 export interface IFlight extends Document {
