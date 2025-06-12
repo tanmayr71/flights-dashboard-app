@@ -1,10 +1,23 @@
 {
-  "name": "flights-dashboard-app-root",
+  "name": "flights-dashboard-app",
   "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
   "scripts": {
-    "dev": "concurrently -k \"npm --prefix client run dev\" \"npm --prefix server run dev\""
+    "build:shared": "npm run build -w @myproj/shared",
+    "build:server": "npm run build -w server",
+    "build:client": "npm run build -w client",
+
+    "build": "npm-run-all -s build:shared build:server build:client",
+
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "dev": "npm-run-all -p dev:server dev:client"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "npm-run-all": "^4.1.5"
   }
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import pRetry from "p-retry";
-import { AIRPORT_TO_LOCATION } from "../constants/app-constants";
+import { AIRPORT_TO_LOCATION } from "@myproj/shared";
 
 /** Shape of a single hour block from Visual Crossing (subset) */
 export interface HourSample {

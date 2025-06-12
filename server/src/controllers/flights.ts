@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { loadWeather } from "../services/weatherCache";
 import { needsWeatherAlert } from "../utils/weatherAlert";
 import Flight from "../models/Flight";
-import { TIMES_OF_DAY, TimeOfDay } from "../constants/app-constants";
+import { TIMES_OF_DAY, type TimeOfDay } from "@myproj/shared";
 
 /** GET /api/flights?airport=JFK&dayOfWeek=Monday&timeOfDay=morning */
 export async function getFlights(req: Request, res: Response) {

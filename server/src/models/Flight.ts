@@ -15,7 +15,7 @@ import {
   type DayOfWeek,
   type TimeOfDay,
   type FlightStatus
-} from '../constants/app-constants';
+} from "@myproj/shared";
 
 //  Flight interface  
 export interface IFlight extends Document {

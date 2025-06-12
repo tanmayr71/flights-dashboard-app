@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    /* base I/O */
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+
+    /* emit ES-modules that Node understands */
+    "module": "NodeNext",          // ← must match the resolution mode
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "esModuleInterop": true,
+
+    /* safety */
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

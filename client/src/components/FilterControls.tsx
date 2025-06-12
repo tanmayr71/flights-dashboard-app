@@ -1,66 +1,77 @@
 import React from "react";
-import SelectInput from "./SelectInput";
-import { DAYS_OF_WEEK } from "../../../shared/constants";
+import {
+  AIRPORTS,
+  DAYS_OF_WEEK,
+  TIME_PERIODS,
+} from "@myproj/shared";
+import type { DayOfWeek, TimeOfDay } from "@myproj/shared";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-interface FilterControlsProps {
+interface Props {
   selectedAirport: string;
-  selectedDay: string;
-  selectedTime: string;
-  onAirportChange: (airport: string) => void;
-  onDayChange: (day: string) => void;
-  onTimeChange: (time: string) => void;
+  selectedDay: DayOfWeek;
+  selectedTime: TimeOfDay;
+  onAirportChange: (a: string)     => void;
+  onDayChange:     (d: DayOfWeek)  => void;
+  onTimeChange:    (t: TimeOfDay)  => void;
 }
 
-const FilterControls: React.FC<FilterControlsProps> = ({
+const FilterControls: React.FC<Props> = ({
   selectedAirport,
   selectedDay,
   selectedTime,
   onAirportChange,
   onDayChange,
-  onTimeChange
-}) => {
-  // Generate day options only once (memoized) to avoid recalculation on every render
-  const dayOptions: Option[] = DAYS_OF_WEEK.map(d => ({ label: d, value: d }));
-  
-  // Define static options for airports and times
-  const airportOptions: Option[] = [
-    { label: "JFK", value: "JFK" },
-    { label: "LAX", value: "LAX" },
-    // Add more airports if needed
-  ];
-  const timeOptions: Option[] = [
-    { label: "Morning", value: "morning" },
-    { label: "Afternoon", value: "afternoon" },
-    { label: "Evening", value: "evening" }
-  ];
-
-  return (
-    <div className="flex flex-wrap items-end gap-4 p-4 bg-gray-50">
-      <SelectInput 
-        label="Airport" 
-        options={airportOptions} 
-        value={selectedAirport} 
-        onChange={onAirportChange} 
-      />
-      <SelectInput 
-        label="Day" 
-        options={dayOptions} 
-        value={selectedDay} 
-        onChange={onDayChange} 
-      />
-      <SelectInput 
-        label="Time of Day" 
-        options={timeOptions} 
-        value={selectedTime} 
-        onChange={onTimeChange} 
-      />
+  onTimeChange,
+}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    {/* Airport */}
+    <div className="flex flex-col">
+      <label className="text-sm font-semibold text-gray-700 mb-1">
+        Airport Code
+      </label>
+      <select
+        className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300"
+        value={selectedAirport}
+        onChange={(e) => onAirportChange(e.target.value)}
+      >
+        {AIRPORTS.map((code: string) => (
+          <option key={code}>{code}</option>
+        ))}
+      </select>
     </div>
-  );
-};
+
+    {/* Day */}
+    <div className="flex flex-col">
+      <label className="text-sm font-semibold text-gray-700 mb-1">
+        Day of Week
+      </label>
+      <select
+        className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300"
+        value={selectedDay}
+        onChange={(e) => onDayChange(e.target.value as DayOfWeek)}
+      >
+        {DAYS_OF_WEEK.map((d: DayOfWeek) => (
+          <option key={d}>{d}</option>
+        ))}
+      </select>
+    </div>
+
+    {/* Time-of-day */}
+    <div className="flex flex-col">
+      <label className="text-sm font-semibold text-gray-700 mb-1">
+        Time of Day
+      </label>
+      <select
+        className="border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-300"
+        value={selectedTime}
+        onChange={(e) => onTimeChange(e.target.value as TimeOfDay)}
+      >
+        {TIME_PERIODS.map((p: TimeOfDay) => (
+          <option key={p}>{p}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+);
 
 export default FilterControls;

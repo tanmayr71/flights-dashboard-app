@@ -1,7 +1,7 @@
 import axios from "axios";
 import WeatherData from "../models/WeatherData";
 import { HourSample } from "../utils/weather";
-import { AIRPORT_TO_LOCATION } from "../constants/app-constants"; 
+import { AIRPORT_TO_LOCATION } from "@myproj/shared"; 
 
 // Helpers -> Map<string,hour> ➜ Record<number,hour> (0‒23 keys)
 const mapToNumericHours = (

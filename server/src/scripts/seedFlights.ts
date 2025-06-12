@@ -13,7 +13,7 @@ import {
   AIRPORTS,
   DAYS_OF_WEEK,
   type TimeOfDay
-} from "../constants/app-constants";
+} from "@myproj/shared";
 
 // Import the Flight model
 import Flight from "../models/Flight";

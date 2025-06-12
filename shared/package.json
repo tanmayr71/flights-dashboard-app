@@ -1,0 +1,21 @@
+{
+  "name": "@myproj/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".":            "./dist/index.js",
+    "./constants":  "./dist/constants.js",
+    "./airports":   "./dist/airports.js",
+    "./types":      "./dist/types.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
