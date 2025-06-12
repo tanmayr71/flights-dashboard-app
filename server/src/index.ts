@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { getFlights } from "./controllers/flights";
@@ -8,6 +9,7 @@ import { startStatusScheduler } from "./services/statusManager";
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get("/api/health", (_, res) => res.send("API is up!"));
 

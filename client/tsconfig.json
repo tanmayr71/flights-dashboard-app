@@ -1,4 +1,11 @@
 {
+  "compilerOptions": {
+    // allow absolute imports relative to project root
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["../shared/*"]   // <-- monorepo-style import
+    }
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
