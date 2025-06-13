@@ -140,12 +140,21 @@ GET /api/flights?airport=JFK&dayOfWeek=Friday&timeOfDay=evening
 }
 ```
 
-### `POST /api/admin/reset-statuses`
-Reset non-final flight statuses to "On Time".
+## Admin Endpoints
 
-**Response:**
+> **All routes are `POST`** and return the number of flight documents affected.
+
+| Path | What it does | Typical use |
+|------|--------------|-------------|
+| `/api/admin/reset-statuses` | **Soft reset** – sets every flight that is *not* `Departed` back to `"On Time"`. | Refresh the current-day board while keeping actual history for flights that already took off. |
+| `/api/admin/reset-all` | **Hard reset** – sets *every* flight (including `Cancelled` and `Departed`) back to `"On Time"`. | Full “wipe” for demos or automated test cycles. |
+
+### Response shape
+
 ```json
-{ "ok": true }
+{
+  "modified": <number_of_flights_updated>
+}
 ```
 
 ## 🎯 Flight Status Simulation
