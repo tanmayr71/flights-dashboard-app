@@ -1,10 +1,6 @@
 import React from "react";
-import {
-  AIRPORTS,
-  DAYS_OF_WEEK,
-  TIME_PERIODS,
-} from "@myproj/shared";
-import type { DayOfWeek, TimeOfDay } from "@myproj/shared";
+import { AIRPORTS, DAYS_OF_WEEK, type DayOfWeek, type TimeOfDay } from "@myproj/shared";
+import { TIME_OPTIONS } from "../constants/timeOptions";
 
 interface Props {
   selectedAirport: string;
@@ -66,8 +62,11 @@ const FilterControls: React.FC<Props> = ({
         value={selectedTime}
         onChange={(e) => onTimeChange(e.target.value as TimeOfDay)}
       >
-        {TIME_PERIODS.map((p: TimeOfDay) => (
-          <option key={p}>{p}</option>
+        {TIME_OPTIONS.map(
+            ({ value, label }: { value: TimeOfDay; label: string }) => (
+                <option key={value} value={value}>
+                    {label}
+                </option>
         ))}
       </select>
     </div>

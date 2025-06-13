@@ -4,6 +4,7 @@ import {
   DAYS_OF_WEEK,
   TIME_PERIOD_LABELS,
 } from "@myproj/shared";
+import { TIME_OPTIONS } from "./constants/timeOptions";
 import type { Flight, DayOfWeek, TimeOfDay } from "@myproj/shared";
 import FilterControls from "./components/FilterControls";
 import FlightCard from "./components/FlightCard";
@@ -67,7 +68,10 @@ const App: React.FC = () => {
       {/* main content */}
       <main className="flex-1 max-w-4xl mx-auto w-full p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          {period} Flights&nbsp;
+          {TIME_OPTIONS.find(
+            (opt: { value: TimeOfDay; label: string }) => opt.value === period
+          )?.label ?? period} Flights&nbsp;
+
           <span className="text-gray-500 font-normal">
             ({TIME_PERIOD_LABELS[period]})
           </span>
