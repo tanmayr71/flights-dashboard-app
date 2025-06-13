@@ -15,7 +15,9 @@
 
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run dev -w client",
-    "dev": "npm-run-all -p dev:server dev:client"
+    "dev": "npm-run-all -p dev:server dev:client",
+
+    "seed": "npm run seed -w server"
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5"
