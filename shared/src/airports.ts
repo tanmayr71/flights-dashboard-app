@@ -15,10 +15,9 @@ export const AIRPORT_DATA = {
 } as const;
 
 /* ------------ helpers auto-derived from the object above ------------- */
-export const AIRPORTS = Object.keys(AIRPORT_DATA) as Array<keyof typeof AIRPORT_DATA>;
-export const AIRPORT_CODES = AIRPORTS;                                // alias
+export const AIRPORT_CODES = Object.values(AIRPORT_DATA).map(airport => airport.code);
 export const AIRPORT_TO_LOCATION: Record<string, string> = Object.fromEntries(
-  Object.entries(AIRPORT_DATA).map(([c, d]) => [c, d.weatherLocation]),
+  Object.values(AIRPORT_DATA).map(airport => [airport.code, airport.weatherLocation]),
 );
 
 /* ---------- compile-time unions ---------- */

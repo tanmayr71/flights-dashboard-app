@@ -7,7 +7,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 // Import constants from our single source of truth
 import {
-  AIRPORTS,
+  AIRPORT_CODES,
   DAYS_OF_WEEK,
   TIMES_OF_DAY,
   FLIGHT_STATUSES,
@@ -37,7 +37,7 @@ const flightSchema = new Schema<IFlight>(
   {
     flightId:         { type: String, required: true,  index: true },
     dayOfWeek:        { type: String, enum: DAYS_OF_WEEK, required: true },
-    departureAirport: { type: String, enum: AIRPORTS,     required: true },
+    departureAirport: { type: String, enum: AIRPORT_CODES,     required: true },
     arrivalAirport:   { type: String,                      required: true },
     departureTime:    { type: Date,   required: true,  index: true },
     arrivalTime:      { type: Date,   required: true },

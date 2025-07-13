@@ -10,7 +10,7 @@ import { addDays, set } from 'date-fns';
 
 // Import from our centralized constants
 import {
-  AIRPORTS,
+  AIRPORT_CODES,
   DAYS_OF_WEEK,
   type TimeOfDay
 } from "@myproj/shared";
@@ -30,15 +30,15 @@ import Flight from "../models/Flight";
 
   // hours template for each period
   const HOURS: Record<TimeOfDay, number[]> = {
-    morning:   [6, 8, 10],
-    afternoon: [12, 14, 16],
-    evening:   [18, 20, 22]
+    Morning:   [6, 8, 10],
+    Afternoon: [12, 14, 16],
+    Evening:   [18, 20, 22]
   };
 
   for (const offset of dayOffsets) {
     const baseDate = addDays(today, offset);
 
-    for (const airport of AIRPORTS) {
+    for (const airport of AIRPORT_CODES) {
       for (const [period, hours] of Object.entries(HOURS) as [TimeOfDay, number[]][]) {
 
         for (const hour of hours) {

@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import {
-  AIRPORTS,
+  AIRPORT_CODES,
   DAYS_OF_WEEK,
   TIME_PERIOD_LABELS,
 } from "@myproj/shared";
-import { TIME_OPTIONS } from "./constants/timeOptions";
 import type { Flight, DayOfWeek, TimeOfDay } from "@myproj/shared";
+import type { AirportCode } from "@myproj/shared";
 import FilterControls from "./components/FilterControls";
 import FlightCard from "./components/FlightCard";
 
 const App: React.FC = () => {
   /* ---------- filter state ---------- */
   const todayName = DAYS_OF_WEEK[new Date().getDay()] as DayOfWeek;
-  const [airport, setAirport] = useState<string>(AIRPORTS[0]);
+  
+  const [airport, setAirport] = useState<AirportCode>(AIRPORT_CODES[0]);
   const [day, setDay]         = useState<DayOfWeek>(todayName);
-  const [period, setPeriod]   = useState<TimeOfDay>("morning");
+  const [period, setPeriod]   = useState<TimeOfDay>("Morning");
 
   /* ---------- data state ---------- */
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -46,6 +47,18 @@ const App: React.FC = () => {
     };
 
     fetchFlights();
+
+    // Set up polling to fetch every 60 seconds (1 minute)
+    const pollingInterval = setInterval(() => {
+      console.log("Polling for updated flight data...");
+      fetchFlights();
+    }, 60000); // 60,000 milliseconds = 1 minute
+
+    // Cleanup function: stop polling when component unmounts or filters change
+    return () => {
+      console.log("Cleaning up polling interval");
+      clearInterval(pollingInterval);
+    };
   }, [airport, day, period]);
 
   /* ---------- render ---------- */
@@ -68,10 +81,7 @@ const App: React.FC = () => {
       {/* main content */}
       <main className="flex-1 max-w-4xl mx-auto w-full p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          {TIME_OPTIONS.find(
-            (opt: { value: TimeOfDay; label: string }) => opt.value === period
-          )?.label ?? period} Flights&nbsp;
-
+          {period} Flights&nbsp;
           <span className="text-gray-500 font-normal">
             ({TIME_PERIOD_LABELS[period]})
           </span>
