@@ -7,7 +7,7 @@
     "shared"
   ],
   "scripts": {
-    "build:shared": "npm run build -w @myproj/shared",
+    "build:shared": "npm run build -w shared",
     "build:server": "npm run build -w server",
     "build:client": "npm run build -w client",
 

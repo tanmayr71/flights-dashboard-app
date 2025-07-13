@@ -13,13 +13,6 @@ app.use(cors());
 
 app.get("/api/health", (_, res) => res.send("API is up!"));
 
-app.get("/api/debug/env", (_, res) => {
-  res.json({
-    VISUAL_CROSSING_KEY: process.env.VISUAL_CROSSING_KEY || "(missing)",
-    WEATHER_API_KEY: process.env.WEATHER_API_KEY || "(missing)"
-  });
-});
-
 app.get("/api/flights", getFlights);
 
 app.use("/api/admin", adminRoutes);
