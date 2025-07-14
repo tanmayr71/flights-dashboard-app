@@ -1,13 +1,12 @@
 import axios from "axios";
-import WeatherData from "../models/WeatherData";
-import { HourSample } from "../utils/weather";
+import WeatherData, {HourForecast} from "../models/WeatherData";
 import { AIRPORT_TO_LOCATION } from "@myproj/shared"; 
 
 // Helpers -> Map<string,hour> ➜ Record<number,hour> (0‒23 keys)
 const mapToNumericHours = (
-  map: Map<string, HourSample>
-): Record<number, HourSample> => {
-  const out: Record<number, HourSample> = {};
+  map: Map<string, HourForecast>
+): Record<number, HourForecast> => {
+  const out: Record<number, HourForecast> = {};
   for (const [h, v] of map.entries()) out[Number(h)] = v;
   return out;
 };
@@ -15,15 +14,15 @@ const mapToNumericHours = (
 /**
  * Main loader (cache-first)
  * Returns hourly forecast for airport+date.
- * Always numeric keys (0‒23) and HourSample values.
+ * Always numeric keys (0‒23) and HourForecast values.
  */
 export async function loadWeather(
   airportCode: string,
   dateISO: string              // "YYYY-MM-DD"
-): Promise<Record<number, HourSample>> {
+): Promise<Record<number, HourForecast>> {
   // cache hit?
   const cached = await WeatherData.findOne({ airportCode, dateISO }).exec();
-  if (cached) return mapToNumericHours(cached.hours as Map<string, HourSample>);
+  if (cached) return mapToNumericHours(cached.hours as Map<string, HourForecast>);
 
   // fetch Visual Crossing
   const apiKey = process.env.VISUAL_CROSSING_KEY;
@@ -36,7 +35,7 @@ export async function loadWeather(
   const day = data?.days?.[0];
   if (!day?.hours) throw new Error("VC response missing hours[]");
 
-  const hoursMap = new Map<string, HourSample>();
+  const hoursMap = new Map<string, HourForecast>();
 
   for (const h of day.hours as any[]) {
     const hourKey = String(

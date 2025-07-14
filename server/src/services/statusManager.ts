@@ -43,11 +43,11 @@ async function evaluateFlight(f: HydratedDocument<IFlight>, now: Date) {
     const dateISO = f.departureTime.toISOString().slice(0, 10);
     const wxHours = await loadWeather(f.departureAirport, dateISO);
     const depHour = new Date(f.departureTime).getUTCHours();
-    const depHourSample = wxHours[depHour];
+    const depHourForecast = wxHours[depHour];
 
     if (minutesToDep <= 90 && f.status === "On Time") {
       // inside 90-min window
-      if (needsWeatherAlert(depHourSample)) {
+      if (needsWeatherAlert(depHourForecast)) {
         f.status = "Delayed";                     // weather-forced
       } else if (Math.random() < 0.3) {
         f.status = "Delayed";                     // random delay
@@ -56,7 +56,7 @@ async function evaluateFlight(f: HydratedDocument<IFlight>, now: Date) {
 
     // Revert Delayed → On Time if >90 min out and weather improved
     if (f.status === "Delayed" && minutesToDep > 90) {
-      if (!needsWeatherAlert(depHourSample) && Math.random() < 0.5) {
+      if (!needsWeatherAlert(depHourForecast) && Math.random() < 0.5) {
         f.status = "On Time";
       }
     }

@@ -5,7 +5,7 @@ import { Schema, model, Document } from "mongoose";
 export interface HourForecast {
   temp: number;
   precipprob: number;
-  preciptype?: string[];   // array form
+  preciptype: string[];   // array form
   windspeed: number;
 }
 
