@@ -1,4 +1,5 @@
 import type { FlightStatus, DayOfWeek, TimeOfDay } from "./constants.js";
+import type { AirportCode } from "./airports.js";
 
 export interface FlightWeather {
   temp: number;
@@ -11,7 +12,7 @@ export interface Flight {
   id: string;
   flightId: string;
   dayOfWeek: DayOfWeek;
-  departureAirport: string;
+  departureAirport: AirportCode;
   arrivalAirport: string;
   departureTime: string;  // ISO
   arrivalTime: string;    // ISO
