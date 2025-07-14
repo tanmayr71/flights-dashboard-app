@@ -96,7 +96,7 @@ export const FLIGHT_STATUSES = [
 
 // Type exports
 export type DayOfWeek = "Monday" | "Tuesday" | ... | "Sunday"
-export type TimeOfDay = "morning" | "afternoon" | "evening"
+export type TimeOfDay = "Morning" | "Afternoon" | "Evening"
 export type FlightStatus = "On Time" | "Boarding" | ... | "Cancelled"
 ```
 

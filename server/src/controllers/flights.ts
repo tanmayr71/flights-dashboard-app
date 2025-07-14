@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { loadWeather } from "../services/weatherCache";
 import { needsWeatherAlert } from "../utils/weatherAlert";
 import Flight from "../models/Flight";
-import { TIMES_OF_DAY, type TimeOfDay } from "@myproj/shared";
+import { TIMES_OF_DAY, type DayOfWeek, type TimeOfDay, type AirportCode } from "@myproj/shared";
 
-/** GET /api/flights?airport=JFK&dayOfWeek=Monday&timeOfDay=morning */
+/** GET /api/flights?airport=JFK&dayOfWeek=Monday&timeOfDay=Morning */
 export async function getFlights(req: Request, res: Response) {
   const { airport, dayOfWeek, timeOfDay } = req.query as {
-    airport?: string;
-    dayOfWeek?: string;
+    airport?: AirportCode;
+    dayOfWeek?: DayOfWeek;
     timeOfDay?: TimeOfDay;
   };
 
@@ -18,8 +18,6 @@ export async function getFlights(req: Request, res: Response) {
       .status(400)
       .json({ error: "airport, dayOfWeek, and timeOfDay are required" });
   }
-  if (!TIMES_OF_DAY.includes(timeOfDay))
-    return res.status(400).json({ error: "invalid timeOfDay value" });
 
   // single-index query (IXSCAN)
   const flights = await Flight.find({
@@ -32,7 +30,7 @@ export async function getFlights(req: Request, res: Response) {
 
   if (flights.length === 0) return res.json({ flights: [] });
 
-  // fetch weather once per airport-day
+  // fetch weather once per airport-day pair
   const dateISO = new Date(flights[0].departureTime)
     .toISOString()
     .slice(0, 10);

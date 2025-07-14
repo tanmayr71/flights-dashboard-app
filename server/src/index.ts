@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors"
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { getFlights } from "./controllers/flights";
 import adminRoutes from "./routes/admin";
+import flightRoutes from "./routes/flights";
 import { startStatusScheduler } from "./services/statusManager";
 
 dotenv.config();
@@ -11,19 +11,25 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
 app.get("/api/health", (_, res) => res.send("API is up!"));
-
-app.get("/api/flights", getFlights);
-
+app.use("/api/flights", flightRoutes);
 app.use("/api/admin", adminRoutes);
 
-mongoose
-  .connect(process.env.MONGO_URI as string)
-  .then(() => {
+async function connectToDatabase() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI as string);
     console.log("Mongo connected");
     startStatusScheduler(); // Start the status update scheduler
-  })
-  .catch(console.error);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server on :${PORT}`));
+async function startServer() {
+  await connectToDatabase(); 
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => console.log(`Server on :${PORT}`));
+}
+
+startServer();
