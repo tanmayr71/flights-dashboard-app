@@ -69,8 +69,35 @@ async function evaluateFlight(f: HydratedDocument<IFlight>, now: Date) {
   }
 }
 
+/**
+ * Finalizes past flights to realistic end states.
+ * Reasoning: Past flights shouldn't remain in transient states like "Boarding" or "Delayed".
+ * They should either be "Departed" (if they flew) or "Cancelled" (if previously cancelled).
+ */
+async function finalizePastFlights() {
+  try {
+    const todayStart = startOfDay(new Date()); // Reuse date-fns for midnight today
+
+    const result = await Flight.updateMany(
+      {
+        departureTime: { $lt: todayStart }, // < today (past)
+        status: { $nin: ["Departed", "Cancelled"] } // Not final
+      },
+      {
+        $set: { status: "Departed", lastStatusUpdate: new Date() } // Set Departed + timestamp
+      }
+    );
+
+    console.log(`[startup] Finalized ${result.modifiedCount} past flights to Departed`);
+  } catch (e) {
+    console.error("[startup] Error finalizing past flights", e);
+  }
+}
+
 // Scheduler: every minute evaluate today’s active flights
 export function startStatusScheduler() {
+  finalizePastFlights(); // runs once on startup
+
   const job = async () => {
     try {
       const todayStart = startOfDay(new Date());
