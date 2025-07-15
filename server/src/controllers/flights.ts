@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { loadWeather } from "../services/weatherCache";
 import { needsWeatherAlert } from "../utils/weatherAlert";
-import Flight from "../models/Flight";
+import FlightModel from "../models/Flight";
+import { toFlightDTO } from "../mappers/toFlightDTO";
+import type { Flight as FlightDTO } from "@myproj/shared";
 import { type DayOfWeek, type TimeOfDay, type AirportCode } from "@myproj/shared";
 
 /** GET /api/flights?airport=JFK&dayOfWeek=Monday&timeOfDay=Morning */
@@ -20,34 +22,33 @@ export async function getFlights(req: Request, res: Response) {
   }
 
   // single-index query (IXSCAN)
-  const flights = await Flight.find({
+  const flightDocs = await FlightModel.find({
     departureAirport: airport,
     dayOfWeek,
     timeOfDay
-  })
-    .sort({ departureTime: 1 });
-    // .lean({ virtuals: true });
+  }).sort({ departureTime: 1 });
 
-  if (flights.length === 0) return res.json({ flights: [] });
+  if (flightDocs.length === 0) return res.json({ flights: [] });
 
   // fetch weather once per airport-day pair
-  const dateISO = new Date(flights[0].departureTime)
+  const dateISO = new Date(flightDocs[0].departureTime)
     .toISOString()
     .slice(0, 10);
   const hourly = await loadWeather(airport, dateISO);
 
-  // enrich & flag alerts
-  const enriched = flights.map(f => {
-    const doc = f.toObject({ virtuals: true });
-    const depHour = new Date(doc.departureTime).getUTCHours();         
-    const sample  = hourly[depHour];
+  // Transform each flight document to DTO with its weather data
+  const flightDTOs: FlightDTO[] = flightDocs.map(doc => {
+    // Get the hour for weather lookup
+    const depHour = new Date(doc.departureTime).getUTCHours();
+    const weatherSample = hourly[depHour] || null;
 
-    return {
-      ...doc,
-      weather: sample ?? null,
-      weatherAlert: needsWeatherAlert(sample)
-    };
+    // Pass the weather data directly to the mapper
+    return toFlightDTO(
+      doc, 
+      weatherSample,
+      needsWeatherAlert(weatherSample)
+    );
   });
 
-  res.json({ flights: enriched });
+  res.json({ flights: flightDTOs });
 }
