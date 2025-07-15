@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { loadWeather } from "../services/weatherCache";
-import { needsWeatherAlert } from "../utils/weatherAlert";
 import FlightModel from "../models/Flight";
 import { toFlightDTO } from "../mappers/toFlightDTO";
 import type { Flight as FlightDTO } from "@myproj/shared";
@@ -38,16 +37,9 @@ export async function getFlights(req: Request, res: Response) {
 
   // Transform each flight document to DTO with its weather data
   const flightDTOs: FlightDTO[] = flightDocs.map(doc => {
-    // Get the hour for weather lookup
-    const depHour = new Date(doc.departureTime).getUTCHours();
-    const weatherSample = hourly[depHour] || null;
-
-    // Pass the weather data directly to the mapper
-    return toFlightDTO(
-      doc, 
-      weatherSample,
-      needsWeatherAlert(weatherSample)
-    );
+    const depHour = doc.departureTime.getUTCHours();
+    const weatherSample = hourly[depHour] ?? null;
+    return toFlightDTO(doc, weatherSample);
   });
 
   res.json({ flights: flightDTOs });

@@ -1,42 +1,46 @@
 // server/src/mappers/toFlightDTO.ts
+import { HydratedDocument } from "mongoose";
 import type { IFlight } from "../models/Flight";
 import type { Flight as FlightDTO, FlightWeather } from "@myproj/shared";
+import { needsWeatherAlert } from "../utils/weatherAlert";
 
-// The mapper now takes the flight document and weather data separately
+/**
+ * Convert a fully-hydrated Flight doc plus an optional weather sample
+ * into the shape required by the shared Flight DTO.
+ */
 export function toFlightDTO(
-  flightDoc: IFlight, 
-  weatherData: FlightWeather | null,
-  weatherAlert: boolean
+  doc: HydratedDocument<IFlight>,
+  weatherSample: FlightWeather
 ): FlightDTO {
-  // Extract the plain object with virtuals included
-  const plainObj = flightDoc.toObject({ virtuals: true });
+  // Use a concrete object so `weather` is never `undefined`
+  const weather: FlightWeather = weatherSample ?? {
+    temp: 0,
+    precipprob: 0,
+    preciptype: [] as string[],
+    windspeed: 0
+  };
 
   return {
-    // Transform MongoDB _id to id
-    id: plainObj._id.toString(),
-    
-    // Copy over fields that match directly
-    flightId: plainObj.flightId,
-    dayOfWeek: plainObj.dayOfWeek,
-    departureAirport: plainObj.departureAirport,
-    arrivalAirport: plainObj.arrivalAirport,
-    timeOfDay: plainObj.timeOfDay,
-    status: plainObj.status,
-    
-    // Convert Date objects to ISO strings
-    departureTime: plainObj.departureTime.toISOString(),
-    arrivalTime: plainObj.arrivalTime.toISOString(),
-    
-    // Virtual field should be available
-    duration: plainObj.duration || { hours: 0, minutes: 0 },
-    
-    // Weather fields passed as parameters
-    weather: weatherData || {
-      temp: 0,
-      precipprob: 0,
-      preciptype: [],
-      windspeed: 0
-    },
-    weatherAlert: weatherAlert
+    /* Mongoose gives a string alias out of the box → no manual _id cast */
+    id: doc.id,                                         
+
+    /* Fields that map 1-to-1 */
+    flightId: doc.flightId,
+    dayOfWeek: doc.dayOfWeek,
+    departureAirport: doc.departureAirport,
+    arrivalAirport: doc.arrivalAirport,
+    timeOfDay: doc.timeOfDay,
+    status: doc.status,
+
+    /* Ensure dates are ISO strings */
+    departureTime: doc.departureTime.toISOString(),
+    arrivalTime:   doc.arrivalTime.toISOString(),
+
+    /* Virtual already present on the hydrated doc */
+    duration: doc.duration ?? { hours: 0, minutes: 0 }, 
+
+    /* Weather enrichment */
+    weather,
+    weatherAlert: needsWeatherAlert(weatherSample)
   };
 }
