@@ -23,13 +23,18 @@ async function evaluateFlight(f: HydratedDocument<IFlight>, now: Date) {
   //Boarding / Boarded windows
   else if (minutesToDep <= 15) {
     // 0–15 min before departure
-    if (f.status === "On Time" || f.status === "Boarding") f.status = "Boarded";
-    // If Delayed inside this window, we keep status = 'Delayed'
-    // and the UI will label it "Late Departure".
+      if (f.status === "On Time" || f.status === "Boarding") {
+        f.status = "Boarded";
+      } else if (f.status === "Delayed") {
+        f.status = "Late Departure"; 
+      }
   } else if (minutesToDep <= 45) {
     // 15–45 min
-    if (f.status === "On Time") f.status = "Boarding";
-    // If already Delayed, we keep it Delayed (Late Departure scenario)
+    if (f.status === "On Time") {
+      f.status = "Boarding";
+    } else if (f.status === "Delayed") {
+      f.status = "Late Departure"; 
+    }
   }
 
   // >45 min out: decide Delay or Cancel
